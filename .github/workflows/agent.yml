@@ -44,11 +44,11 @@ jobs:
 
       - name: Run
         env:
-          # 使用你的 Secret 名字
+          # 确保这里名字和你 Settings 里的 GEMINI_API_KEY 一致
           GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          # 强制指定为 1.5-flash，这是免费层级最稳定的模型
+          # 换回 flash，它在免费层级响应最快
           OPENCLAW_MODEL: gemini-1.5-flash
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # 额外增加一个变量，防止模型因为安全过滤输出为空
-          SAFETY_SETTING: BLOCK_NONE
+          # 强制开启调试日志，看看它到底在黑盒里干嘛
+          DEBUG: "*"
         run: bun lifecycle/main.ts
