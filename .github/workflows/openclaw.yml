@@ -1,0 +1,34 @@
+name: OpenClaw Runner
+
+on:
+  issues:
+    types: [opened, edited] # 当你发 Issue 或修改 Issue 时启动
+
+# 关键：这里就是你要的权限配置！
+permissions:
+  contents: write    # 允许机器人修改你的代码
+  issues: write      # 允许机器人在 Issue 下回帖
+  pull-requests: write # 允许机器人帮你提交 PR
+
+jobs:
+  run-openclaw:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js v22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install OpenClaw
+        run: npm install -g @openclaw/cli
+
+      - name: Run OpenClaw
+        env:
+          # 注意：这里的名字要和你 Settings 里的 Secret 名字一模一样
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 这里的 TOKEN 自动产生，不用管
+        run: |
+          openclaw run --issue ${{ github.event.issue.number }}
