@@ -10,11 +10,11 @@ permissions:
   contents: write
   issues: write
   actions: write
+  pull-requests: write
 
 jobs:
   run-agent:
     runs-on: ubuntu-latest
-    # 这一段是保安系统，确保只有你能指挥它
     if: >
       (
         github.event_name == 'issues' &&
@@ -44,11 +44,10 @@ jobs:
 
       - name: Run
         env:
-          # --- 这里是核心修改区 ---
-          # 1. 把你的 Gemini 钥匙插进正确的插槽
+          # 1. 核心：插上你的 Gemini 钥匙
           GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          # 2. 明确告诉它：我们要用 Gemini 1.5 Flash 
-          OPENCLAW_MODEL: gemini-1.5-flash
-          # -----------------------
+          # 2. 核心：换成更稳重的 Pro 模型，减少“回空内容”的情况
+          OPENCLAW_MODEL: gemini-1.5-pro
+          # 3. 核心：GitHub 令牌
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bun lifecycle/main.ts
