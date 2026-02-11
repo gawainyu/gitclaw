@@ -14,6 +14,7 @@ permissions:
 jobs:
   run-agent:
     runs-on: ubuntu-latest
+    # 这一段是保安系统，确保只有你能指挥它
     if: >
       (
         github.event_name == 'issues' &&
@@ -43,6 +44,11 @@ jobs:
 
       - name: Run
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # --- 这里是核心修改区 ---
+          # 1. 把你的 Gemini 钥匙插进正确的插槽
+          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          # 2. 明确告诉它：我们要用 Gemini 1.5 Flash 
+          OPENCLAW_MODEL: gemini-1.5-flash
+          # -----------------------
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bun lifecycle/main.ts
