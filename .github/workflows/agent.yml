@@ -44,10 +44,11 @@ jobs:
 
       - name: Run
         env:
-          # 1. 核心：插上你的 Gemini 钥匙
+          # 使用你的 Secret 名字
           GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          # 2. 核心：换成更稳重的 Pro 模型，减少“回空内容”的情况
-          OPENCLAW_MODEL: gemini-1.5-pro
-          # 3. 核心：GitHub 令牌
+          # 强制指定为 1.5-flash，这是免费层级最稳定的模型
+          OPENCLAW_MODEL: gemini-1.5-flash
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 额外增加一个变量，防止模型因为安全过滤输出为空
+          SAFETY_SETTING: BLOCK_NONE
         run: bun lifecycle/main.ts
